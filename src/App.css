@@ -1,38 +1,52 @@
-.App {
-  text-align: center;
+html, body {
+  overflow-x: hidden;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.navbar-custom .nav-link.active {
+  color: rgb(210, 71, 225) !important;
+  /* Override any conflicting styles */
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
+/* For hovering over delete and edit icon */
+.hover-text {
+  display: none;
+  position: absolute;
+  top: -10%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 10px;
+}
+
+.icon-container:hover .hover-text {
+  display: block;
+}
+.hide {
+  display: none;
+}
+
+/* For cursor change to pointer */
+span{
+  cursor: pointer;
+}
+
+/* For sticky navbar */
+.navbar.navbar-custom {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  background-color: #ffffff;
+  z-index: 1000; 
+}
+
+@media (max-width: 767px) {
+  .row-cols-1 > .col {
+      width: 100% !important; /* Ensure full width */
+      margin-right: 0 !important; /* Remove right margin */
+      margin-left: 0 !important; /* Remove left margin */
+      padding-right: 0 !important; /* Remove right padding */
+      padding-left: 0 !important; /* Remove left padding */
   }
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
 
-.App-link {
-  color: #61dafb;
-}
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
