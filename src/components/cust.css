@@ -1,9 +1,11 @@
-@media (max-width: 767px) {
-    .row-cols-1 > .col {
-        width: 100% !important; /* Ensure full width */
-        margin-right: 0 !important; /* Remove right margin */
-        margin-left: 0 !important; /* Remove left margin */
-        padding-right: 0 !important; /* Remove right padding */
-        padding-left: 0 !important; /* Remove left padding */
-    }
+.notes-item-wrapper {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  grid-gap: 16px;
+}
+
+@media screen and (max-width: 768px) {
+  .notes-item-wrapper {
+      grid-template-columns: 1fr;
+  }
 }

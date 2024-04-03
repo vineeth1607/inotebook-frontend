@@ -38,15 +38,17 @@ span{
   z-index: 1000; 
 }
 
-@media (max-width: 767px) {
-  .row-cols-1 > .col {
-      width: 100% !important; /* Ensure full width */
-      margin-right: 0 !important; /* Remove right margin */
-      margin-left: 0 !important; /* Remove left margin */
-      padding-right: 0 !important; /* Remove right padding */
-      padding-left: 0 !important; /* Remove left padding */
-  }
+.hover-text {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 12px;
+    color: red; /* Change the text color to red */
 }
 
-
+.icon-container:hover .hover-text {
+    display: block;
+}
 
