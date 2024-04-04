@@ -1,13 +1,10 @@
 import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { Button, Container, Form, Nav, Navbar } from 'react-bootstrap';
-import '../App.css';
+import '../App.css'; // Import your CSS file
 
 const Customnavbar = () => {
     let location = useLocation();
-    // useEffect(() => {
-    //     console.log(location.pathname)
-    // }, [location]);
 
     return (
         <>
@@ -36,8 +33,7 @@ const Customnavbar = () => {
                 </Container>
             </Navbar>
         </>
-
     )
 }
 
-export default Customnavbar
+export default Customnavbar;

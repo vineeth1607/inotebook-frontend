@@ -2,53 +2,71 @@ html, body {
   overflow-x: hidden;
 }
 
-.navbar-custom .nav-link.active {
-  color: rgb(210, 71, 225) !important;
-  /* Override any conflicting styles */
+/* Custom navbar styles */
+.navbar-custom {
+  border-bottom: 2px solid rgb(210, 71, 225); /* Add a border bottom */
 }
 
-/* For hovering over delete and edit icon */
-.hover-text {
-  display: none;
-  position: absolute;
-  top: -10%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 10px;
+/* Navbar brand styles */
+.navbar-brand {
+  color: white; /* Change brand text color */
+  font-weight: bold; /* Make brand text bold */
 }
 
-.icon-container:hover .hover-text {
-  display: block;
-}
-.hide {
-  display: none;
+/* Navbar links styles */
+.nav-link {
+  color: white; /* Change link text color */
+  font-size: 18px; /* Change link text size */
 }
 
-/* For cursor change to pointer */
-span{
+/* Active link styles */
+.nav-link.active {
+  color: rgb(210, 71, 225) !important; /* Change active link text color */
+}
+
+
+.delete-icon,
+.edit-icon {
+  padding: 5px 10px;
+  border-radius: 5px;
   cursor: pointer;
+  background-color: transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid transparent; /* Add a transparent border to ensure consistent size */
+  transition: border-color ease;
 }
 
-/* For sticky navbar */
-.navbar.navbar-custom {
-  position: fixed;
-  top: 0;
-  width: 100%;
-  background-color: #ffffff;
-  z-index: 1000; 
+.delete-icon:hover,
+.edit-icon:hover {
+  border-color: transparent; /* Ensure the border remains transparent on hover */
 }
 
-.hover-text {
-    display: none;
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 12px;
-    color: red; /* Change the text color to red */
+.delete-icon:hover {
+  border: 2px solid red;
 }
 
-.icon-container:hover .hover-text {
-    display: block;
+.edit-icon:hover {
+  border: 2px solid blue;
 }
+
+.note-item {
+  display: inline-block;
+  margin: 10px;
+  width: 250px;
+ 
+}
+
+.note-item {
+  flex: 0 0 calc(20.333% - 25px); /* Adjust the width of each note */
+  margin: 10px;
+}
+
+.note-item .card {
+  width: 110%; /* Ensure the card takes full width of the note item */
+}
+
+
+
 
