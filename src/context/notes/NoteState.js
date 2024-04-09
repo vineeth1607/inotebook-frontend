@@ -51,28 +51,35 @@ const addNote = async (title, description, tag) => {
 // Delete a Note
 const deleteNote = async (id) => {
   try {
+    // Optimistically update state
+    const newNotes = Array.isArray(notes) ? notes.filter((note) => note._id !== id) : [];
+    setNotes(newNotes);
+
     // Make the API call for deletion
     const response = await fetch(`${host}/api/notes/deletenote/${id}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
-        "authentication-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjYwYzdmZTI3ZWY4Y2JlMDExOWQ1NjhiIn0sImlhdCI6MTcxMjA5NTIzMH0.eA8xSDWwUaJTO05ZL5En762Kpc868KllQaVFiuD1RQE" // Replace with your authentication token
+        "authentication-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjYwYzdmZTI3ZWY4Y2JlMDExOWQ1NjhiIn0sImlhdCI6MTcxMjA5NTIzMH0.eA8xSDWwUaJTO05ZL5En762Kpc868KllQaVFiuD1RQE"
       },
     });
 
     // Handle response
     if (response.ok) {
-      // If deletion succeeds, update state
-      const newNotes = Array.isArray(notes) ? notes.filter((note) => note._id !== id) : [];
-      setNotes(newNotes);
-      console.log("Note deleted successfully with id", id);
+      // Fetch the updated list of notes from the server
+      await getNotes();
     } else {
+      // If deletion fails, revert state
+      setNotes([...notesInitial]);
       console.error("Failed to delete note with id", id);
     }
   } catch (error) {
+    // Revert state if an error occurs
+    setNotes([...notesInitial]);
     console.error("Error deleting note:", error);
   }
-};
+}
+
 
 
   // Editnote
