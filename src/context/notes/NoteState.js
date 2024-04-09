@@ -8,91 +8,99 @@ const NoteState = (props) => {
 
   // fetch  a Note
   const getNotes = async () => {
-    try {
-      const response = await fetch(`${host}/api/notes/fetchallnotes`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          "authentication-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjYwYzdmZTI3ZWY4Y2JlMDExOWQ1NjhiIn0sImlhdCI6MTcxMjA5NTIzMH0.eA8xSDWwUaJTO05ZL5En762Kpc868KllQaVFiuD1RQE" // Replace with your actual authentication token
-        }
-      });
-      
-      if (!response.ok) {
-        throw new Error("Failed to fetch notes");
+    const response = await fetch(`${host}/api/notes/fetchallnotes`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "authentication-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjYwYzdmZTI3ZWY4Y2JlMDExOWQ1NjhiIn0sImlhdCI6MTcxMjA5NTIzMH0.eA8xSDWwUaJTO05ZL5En762Kpc868KllQaVFiuD1RQE"
       }
-  
-      const json = await response.json();
-      setNotes(json);
-    } catch (error) {
-      console.error("Error fetching notes:", error.message);
-    }
-  };
-  
+    });
+    const json = await response.json();
+    console.log(json)
+    setNotes(json);
+
+  }
+
   // Add a Note
-  const addNote = async (title, description, tag) => {
+ // Add a Note
+const addNote = async (title, description, tag) => {
+  try {
     const response = await fetch(`${host}/api/notes/postnotes`, {
-      method: "POST", // *GET, POST, PUT, DELETE, etc.
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
         "authentication-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjYwYzdmZTI3ZWY4Y2JlMDExOWQ1NjhiIn0sImlhdCI6MTcxMjA5NTIzMH0.eA8xSDWwUaJTO05ZL5En762Kpc868KllQaVFiuD1RQE"
       },
-      body: JSON.stringify({ title, description, tag }), // body data type must match "Content-Type" header
+      body: JSON.stringify({ title, description, tag })
     });
-    const json =  await response.json();
 
-    console.log("Adding a new note")
-    const note = {
-      "_id": "61322f119553781a8ca8d0e08",
-      "user": "6131dc5e3e4037cd4734a0664",
-      "title": title,
-      "description": description,
-      "tag": tag,
-      "date": "2021-09-03T14:20:09.668Z",
-      "__v": 0
-    };
-    setNotes(notes.concat(note))
-  }
+    const data = await response.json();
 
-  // Delete a Note
-  const deleteNote = (id) => {
-    // TODO: API Call
-    console.log("Deleting the note with id" + id);
-    const newNotes = notes.filter((note) => { return note._id !== id })
-    setNotes(newNotes)
+    // Check if notes is an array, if not initialize it as an empty array
+    const updatedNotes = Array.isArray(notes) ? notes.concat(data) : [data];
+    setNotes(updatedNotes);
+
+    // Fetch the updated list of notes from the server
+    await getNotes();
+  } catch (error) {
+    console.error("Error adding note:", error);
   }
+}
+
+
+// Delete a Note
+const deleteNote = async (id) => {
+  try {
+    // Make the API call for deletion
+    const response = await fetch(`${host}/api/notes/deletenote/${id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        "authentication-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjYwYzdmZTI3ZWY4Y2JlMDExOWQ1NjhiIn0sImlhdCI6MTcxMjA5NTIzMH0.eA8xSDWwUaJTO05ZL5En762Kpc868KllQaVFiuD1RQE" // Replace with your authentication token
+      },
+    });
+
+    // Handle response
+    if (response.ok) {
+      // If deletion succeeds, update state
+      const newNotes = Array.isArray(notes) ? notes.filter((note) => note._id !== id) : [];
+      setNotes(newNotes);
+      console.log("Note deleted successfully with id", id);
+    } else {
+      console.error("Failed to delete note with id", id);
+    }
+  } catch (error) {
+    console.error("Error deleting note:", error);
+  }
+};
 
 
   // Editnote
-
-    const editNote = async (id, description, title, tag) => {
-      const response = await fetch(`${host}/api/notes/updatenotes/${id}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "authentication-token": "your-auth-token-here" // Replace with your authentication token
-        },
-        body: JSON.stringify({ id, description, title, tag })
-      });
-      const json = await response.json();
-    
-      // Create a new array with the updated notes
-      const updatedNotes = notes.map(note => {
-        if (note._id === id) {
-          return {
-            ...note,
-            title: title,
-            description: description,
-            tag: tag
-          };
-        }
-        return note;
-      });
-    
-      // Set the state with the new array of notes
-      setNotes(updatedNotes);
-    };
-    
-
+  const editNote = async (id, description, title, tag) => {
+    const response = await fetch(`${host}/api/notes/updatenotes/${id}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "authentication-token": "your-auth-token-here" // Replace with your authentication token
+      },
+      body: JSON.stringify({ id, description, title, tag })
+    });
+    const json = await response.json();
+    // Create a new array with the updated notes
+    const updatedNotes = notes.map(note => {
+      if (note._id === id) {
+        return {
+          ...note,
+          title: title,
+          description: description,
+          tag: tag
+        };
+      }
+      return note;
+    });
+    // Set the state with the new array of notes
+    setNotes(updatedNotes);
+  };
 
   return (
     <NoteContext.Provider value={{ notes, addNote, deleteNote, editNote, getNotes }}>

@@ -13,17 +13,17 @@ const NotesItem = (props) => {
 
     return (
         <div className="note-item">
-            <Card>
+            <Card className="custom-card">
                 <Card.Img variant="top" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS5-SQYpLphAzVZoMMX-JPWfLsgEV1h-iExRA&usqp=CAU" />
-                <Card.Body>
-                    <Button className="delete-icon" style={{ margin: 0 }} onClick={() => deleteNote(note._id)}>
+                <Card.Body className="card-body">
+                    <Button className="delete-icon" onClick={() => deleteNote(note._id)}>
                         <DeleteIcon />
                     </Button>
-                    <Button className="edit-icon" style={{ margin: 10 }}>
+                    <Button className="edit-icon">
                         <EditNoteIcon  />
                     </Button>
-                    <Card.Title>{note.title}</Card.Title>
-                    <Card.Text>{note.description}</Card.Text>
+                    <Card.Title className="card-title">{note.title}</Card.Title>
+                    <Card.Text className="card-text">{note.description}</Card.Text>
                 </Card.Body>
             </Card>
         </div>
