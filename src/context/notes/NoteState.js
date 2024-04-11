@@ -1,25 +1,27 @@
+// NoteState.js
+import React, { useState } from 'react';
 import NoteContext from "./NoteContext";
-import { useState } from "react";
 
 const NoteState = (props) => {
   const host = "http://localhost:5000";
   const notesInitial = [];
   const [notes, setNotes] = useState(notesInitial);
 
-  // fetch  a Note
   const getNotes = async () => {
-    const response = await fetch(`${host}/api/notes/fetchallnotes`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        "authentication-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjYwYzdmZTI3ZWY4Y2JlMDExOWQ1NjhiIn0sImlhdCI6MTcxMjA5NTIzMH0.eA8xSDWwUaJTO05ZL5En762Kpc868KllQaVFiuD1RQE"
-      }
-    });
-    const json = await response.json();
-    console.log(json);
-    setNotes(json);
+    try {
+      const response = await fetch(`${host}/api/notes/fetchallnotes`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "authentication-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjYwYzdmZTI3ZWY4Y2JlMDExOWQ1NjhiIn0sImlhdCI6MTcxMjA5NTIzMH0.eA8xSDWwUaJTO05ZL5En762Kpc868KllQaVFiuD1RQE"
+        }
+      });
+      const json = await response.json();
+      setNotes(json);
+    } catch (error) {
+      console.error("Error fetching notes:", error);
+    }
   };
-
   // Add a Note
   const addNote = async (title, description, tag) => {
     try {
@@ -45,16 +47,11 @@ const NoteState = (props) => {
     }
   };
 
-  // Delete a Note
   const deleteNote = async (id) => {
     try {
-      // Optimistically update state
-      const newNotes = Array.isArray(notes)
-        ? notes.filter((note) => note._id !== id)
-        : [];
+      // Ensure that notes is always treated as an array
+      const newNotes = Array.isArray(notes) ? notes.filter((note) => note._id !== id) : [];
       setNotes(newNotes);
-
-      // Make the API call for deletion
       const response = await fetch(`${host}/api/notes/deletenote/${id}`, {
         method: "DELETE",
         headers: {
@@ -62,56 +59,46 @@ const NoteState = (props) => {
           "authentication-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjYwYzdmZTI3ZWY4Y2JlMDExOWQ1NjhiIn0sImlhdCI6MTcxMjA5NTIzMH0.eA8xSDWwUaJTO05ZL5En762Kpc868KllQaVFiuD1RQE"
         }
       });
-
-      // Handle response
-      if (response.ok) {
-        // Fetch the updated list of notes from the server
-        await getNotes();
-      } else {
-        // If deletion fails, revert state
-        setNotes([...notesInitial]);
-        console.error("Failed to delete note with id", id);
+      if (!response.ok) {
+        throw new Error(`Failed to delete note with id ${id}`);
       }
+      await getNotes(); // Fetch the updated list of notes from the server
     } catch (error) {
-      // Revert state if an error occurs
-      setNotes([...notesInitial]);
       console.error("Error deleting note:", error);
     }
   };
+  
 
-  // Edit Note
   const editNote = async (id, description, title, tag) => {
-    const response = await fetch(`${host}/api/notes/updatenotes/${id}`,
-      {
+    try {
+      const response = await fetch(`${host}/api/notes/updatenotes/${id}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           "authentication-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjYwYzdmZTI3ZWY4Y2JlMDExOWQ1NjhiIn0sImlhdCI6MTcxMjA5NTIzMH0.eA8xSDWwUaJTO05ZL5En762Kpc868KllQaVFiuD1RQE"
         },
         body: JSON.stringify({ id, description, title, tag })
-      }
-    );
-    const json = await response.json();
-    // Create a new array with the updated notes
-    const updatedNotes = notes.map((note) => {
-      if (note._id === id) {
-        return {
-          ...note,
-          title: title,
-          description: description,
-          tag: tag
-        };
-      }
-      return note;
-    });
-    // Set the state with the new array of notes
-    setNotes(updatedNotes);
+      });
+      const json = await response.json();
+      const updatedNotes = notes.map((note) => {
+        if (note._id === id) {
+          return {
+            ...note,
+            title,
+            description,
+            tag
+          };
+        }
+        return note;
+      });
+      setNotes(updatedNotes);
+    } catch (error) {
+      console.error("Error editing note:", error);
+    }
   };
 
   return (
-    <NoteContext.Provider
-      value={{ notes, addNote, deleteNote, editNote, getNotes }}
-    >
+    <NoteContext.Provider value={{ notes, addNote, deleteNote, editNote, getNotes }}>
       {props.children}
     </NoteContext.Provider>
   );

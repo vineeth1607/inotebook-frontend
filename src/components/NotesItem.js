@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import Card from 'react-bootstrap/Card';
 import Button from '@mui/material/Button';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -6,20 +6,23 @@ import EditNoteIcon from '@mui/icons-material/EditNote';
 import NoteContext from '../context/notes/NoteContext';
 
 const NotesItem = ({ note, setModalShow }) => {
-    const { deleteNote, updateNote } = useContext(NoteContext); // Import updateNote from context
-    const [editedNote, setEditedNote] = useState(note);
+    const { deleteNote, updateNote } = useContext(NoteContext);
+    const [editedNote, setEditedNote] = useState({}); // Initialize state with an empty object
 
-    const handleEdit = () => {
-        setModalShow(true);
-        // Set editedNote to the current note data when edit button is clicked
+    // Update editedNote state whenever the note prop changes
+    useEffect(() => {
         setEditedNote({
-            _id: note._id, // Ensure _id is included when setting editedNote
+            _id: note._id,
             title: note.title,
             description: note.description,
             tag: note.tag
-          });
-          
+        });
+    }, [note]);
+
+    const handleEdit = () => {
+        setModalShow(true);
     };
+    
     
     const handleChange = (e) => {
         setEditedNote({
@@ -29,7 +32,7 @@ const NotesItem = ({ note, setModalShow }) => {
     };
 
     const handleUpdateNote = () => {
-        updateNote(editedNote); // Call the updateNote function
+        updateNote(editedNote);
         setModalShow(false);
     };
 
@@ -44,8 +47,8 @@ const NotesItem = ({ note, setModalShow }) => {
                     <Button className="edit-icon" onClick={handleEdit}>
                         <EditNoteIcon />
                     </Button>
-                    <Card.Title className="card-title">{note.title}</Card.Title>
-                    <Card.Text className="card-text">{note.description}</Card.Text>
+                    <Card.Title className="card-title">{editedNote.title}</Card.Title>
+                    <Card.Text className="card-text">{editedNote.description}</Card.Text>
                 </Card.Body>
             </Card>
         </div>

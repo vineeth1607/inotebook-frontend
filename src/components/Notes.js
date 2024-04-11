@@ -1,3 +1,4 @@
+// Notes.js
 import React, { useContext, useEffect, useState } from 'react';
 import NoteContext from "../context/notes/NoteContext"
 import AddNote from './AddNote';
@@ -95,14 +96,13 @@ const Notes = (props) => {
         <h2>Your Notes</h2>
         {Array.isArray(notes) ? (
           notes.map((note, index) => (
-            <NotesItem key={index} note={note} setModalShow={setModalShow} editNote={editNote} />
+            <NotesItem key={index} note={note} setModalShow={setModalShow} />
           ))
         ) : (
           notes && notes.notes.map((note, index) => (
-            <NotesItem key={index} note={note} setModalShow={setModalShow} editNote={editNote} />
+            <NotesItem key={index} note={note} setModalShow={setModalShow} />
           ))
         )}
-
       </div>
     </>
   );
